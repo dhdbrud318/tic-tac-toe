@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/favicon-32x32.png"
+    />
+
+    <title>Frontend Mentor | Tic Tac Toe</title>
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- New game menu start -->
+    <main>
+      <form class="starter container">
+        <header class="starter__header">
+          <img src="assets/logo.svg" alt="Tic Tae Toe Logo" />
+        </header>
+        <div class="starter__player-selection comp flex-col">
+          <h3 class="starter__pick-instruction">Pick player 1's mark</h3>
+          <div class="starter__pick-player flex-row">
+            <input type="radio" name="player-token" id="playerX" />
+            <label for="playerX" class="starter__label">
+              <svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  class="starter__player-mark"
+                  d="M15.002 1.147 32 18.145 48.998 1.147a3 3 0 0 1 4.243 0l9.612 9.612a3 3 0 0 1 0 4.243L45.855 32l16.998 16.998a3 3 0 0 1 0 4.243l-9.612 9.612a3 3 0 0 1-4.243 0L32 45.855 15.002 62.853a3 3 0 0 1-4.243 0L1.147 53.24a3 3 0 0 1 0-4.243L18.145 32 1.147 15.002a3 3 0 0 1 0-4.243l9.612-9.612a3 3 0 0 1 4.243 0Z"
+                  fill="#a8bfc9"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </label>
+            <input type="radio" name="player-token" id="playerO" checked />
+            <label for="playerO" class="starter__label">
+              <svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  class="starter__player-mark"
+                  d="M32 0c17.673 0 32 14.327 32 32 0 17.673-14.327 32-32 32C14.327 64 0 49.673 0 32 0 14.327 14.327 0 32 0Zm0 18.963c-7.2 0-13.037 5.837-13.037 13.037 0 7.2 5.837 13.037 13.037 13.037 7.2 0 13.037-5.837 13.037-13.037 0-7.2-5.837-13.037-13.037-13.037Z"
+                  fill="#1f3641"
+                />
+              </svg>
+            </label>
+          </div>
+
+          <p class="starter__turn-instruction p--gray">
+            Remember: X goes first
+          </p>
+        </div>
+        <button class="starter__btn-start comp comp--yellow" id="play-cpu">
+          New Game (vs CPU)
+        </button>
+        <button class="starter__btn-start comp comp--blue" id="play-player">
+          New Game (vs player)
+        </button>
+      </form>
+
+      <section class="play-game container flex-col invisible">
+        <header class="play-game__header grid">
+          <img src="assets/logo.svg" alt="Tic Tae Toe Logo" />
+          <div class="play-game__player-turn flex-row comp comp--sm">
+            <div class="play-game__current-player">
+              <img
+                src="assets/icon-x.svg"
+                id="play-game__current-icon"
+                alt=""
+              />
+            </div>
+            <h3>turn</h3>
+          </div>
+          <button class="play-game__restart-btn comp comp--sm comp--gray">
+            <img src="assets/icon-restart.svg" alt="restart" />
+          </button>
+        </header>
+
+        <div class="play-game__board grid grid-row">
+          <div class="play-game__overlay invisible"></div>
+          <button class="play-game__box comp" value="0"></button>
+          <button class="play-game__box comp" value="1"></button>
+          <button class="play-game__box comp" value="2"></button>
+          <button class="play-game__box comp" value="3"></button>
+          <button class="play-game__box comp" value="4"></button>
+          <button class="play-game__box comp" value="5"></button>
+          <button class="play-game__box comp" value="6"></button>
+          <button class="play-game__box comp" value="7"></button>
+          <button class="play-game__box comp" value="8"></button>
+        </div>
+
+        <div class="play-game__score-board grid">
+          <div class="play-game__score flex-col clr--blue">
+            <p>X (<span id="score-x">you</span>)</p>
+            <h2>0</h2>
+          </div>
+          <div class="play-game__score flex-col clr--gray">
+            <p>ties</p>
+            <h2>0</h2>
+          </div>
+          <div class="play-game__score flex-col clr--yellow">
+            <p>O (<span id="score-o">cpu</span>)</p>
+            <h2>0</h2>
+          </div>
+        </div>
+      </section>
+
+      <section class="overlay flex-col invisible">
+        <div class="overlay__summary-box">
+          <div class="wrapper flex-col">
+            <p class="overlay__msg p--gray"></p>
+            <div class="overlay__winner">
+              <div class="overlay__winner-icon">
+                <img src="assets/icon-o.svg" alt="O" />
+              </div>
+              <h1 class="overlay__winner-text p--gray">takes the round</h1>
+            </div>
+            <div class="overlay__btns invisible" id="'gameover-btns">
+              <button class="overlay__btn comp comp--gray">quit</button>
+              <button class="overlay__btn comp comp--yellow">next round</button>
+            </div>
+
+            <div class="overlay__btns" id="restart-btns">
+              <button class="overlay__btn comp comp--gray">no, cancel</button>
+              <button class="overlay__btn comp comp--yellow">
+                yes, restart
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
