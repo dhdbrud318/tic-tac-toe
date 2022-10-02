@@ -12,6 +12,7 @@ const scoreBoard = document.querySelectorAll(".play-game__score");
 let p1ScoreBoard, p2ScoreBoard;
 
 // update & reset winner window
+const playerResultMsg = document.querySelector(".overlay__msg");
 const winnerText = document.querySelector(".overlay__winner-text");
 const winnerIcon = document.querySelector(".overlay__winner-icon");
 
@@ -31,6 +32,9 @@ const tie = { score: 0, isTied: true };
 let isWinner;
 let currentTurn = "x";
 let moveCount = 0;
+let isGameOver = false;
+let tieScore = 0;
+let winner;
 
 const filledIconPath = (path = currentTurn) => `../assets/icon-${path}.svg`;
 const outlineIconPath = (path = currentTurn) =>
@@ -46,6 +50,16 @@ function Player(playername, isCPU = false) {
   this.winningScore = 0;
   this.isCPU = isCPU;
   let token;
+
+  this.restart = () => {
+    this.board = [0, 0, 0, 0, 0, 0, 0, 0];
+  };
+
+  this.reset = () => {
+    this.board = [0, 0, 0, 0, 0, 0, 0, 0];
+    this.winningScore = 0;
+    token = false;
+  };
 
   Object.defineProperty(this, "token", {
     get: () => token,
@@ -103,42 +117,42 @@ function mouseClickBox(box) {
 // evaluate game
 function checkWinner() {
   if (player1.board.includes(3)) {
-    player1.winningScore++;
-    return player1;
+    isGameOver = true;
+    winner = player1;
   } else if (player2.board.includes(3)) {
-    player2.winningScore++;
-    return player2;
+    isGameOver = true;
+    winner = player2;
   } else if (moveCount === 9) {
-    tie.score++;
-    return tie;
-  } else return;
+    isGameOver = true;
+    winner = "tie";
+  }
 }
-const result = document.querySelector(".overlay__msg");
+
 function setWinnerMsg() {
-  if (isWinner.isTied) {
-    result.innerText = "";
+  if (winner === "tie") {
+    playerResultMsg.innerText = "";
     winnerIcon.style.display = "none";
     winnerText.innerText = "round tied";
     return;
   }
 
   if (playWithCPU)
-    result.innerText = isWinner === player1 ? "YOU WON!" : "OH NO, YOU LOST…";
-  else result.innerText = `${isWinner.playername} WINS!`;
+    playerResultMsg.innerText =
+      winner === player1 ? "YOU WON!" : "OH NO, YOU LOST…";
+  else playerResultMsg.innerText = `${winner.playername} WINS!`;
 
   winnerIcon.firstElementChild.setAttribute(
     "src",
-    filledIconPath(isWinner.token)
+    filledIconPath(winner.token)
   );
-  winnerText.classList.add(`p--player${isWinner.token.toUpperCase()}`);
+  winnerText.classList.add(`p--player${winner.token.toUpperCase()}`);
 }
 
-// update board
+// display selection on the board
 function fillBoard(index) {
   const row = Math.floor(index / 3);
   const col = index % 3;
-  let pd = false,
-    sd = false;
+  let pd, sd;
 
   if (index === 0 || index === 4 || index === 8) pd = true;
   if (index === 2 || index === 4 || index === 6) sd = true;
@@ -160,15 +174,22 @@ function fillBoard(index) {
 function updateScores() {
   p1ScoreBoard.lastElementChild.innerText = player1.winningScore;
   p2ScoreBoard.lastElementChild.innerText = player2.winningScore;
-  scoreBoard[1].lastElementChild.innerText = tie.score;
+  scoreBoard[1].lastElementChild.innerText = tieScore;
 }
 
 // restart game
-function restartGame() {
+function restartGame(quit = false) {
   currentTurn = "x";
   moveCount = 0;
-  player1.board = [0, 0, 0, 0, 0, 0, 0, 0];
-  player2.board = [0, 0, 0, 0, 0, 0, 0, 0];
+  winner = null;
+  isGameOver = false;
+  if (!quit) {
+    player1.restart();
+    player2.restart();
+  } else {
+    player1.reset();
+    player2.reset();
+  }
 
   boardBoxes.forEach((s) => {
     if (s.hasChildNodes()) s.firstChild.remove();
@@ -178,14 +199,12 @@ function restartGame() {
   currentTurnIcon.setAttribute("src", filledIconPath());
 }
 
-function resetScoreBoard() {
-  result.innerText = "";
-  if (isWinner.isTied) {
-    winnerText.innerText = "takes the round";
-    winnerIcon.style.display = "block";
-  } else {
-    winnerText.classList.remove(`p--player${isWinner.token.toUpperCase()}`);
-  }
+function resetOverlay() {
+  playerResultMsg.innerText = "";
+  winnerText.innerText = "takes the round";
+  winnerIcon.style.display = "block";
+  if (winner)
+    winnerText.classList.remove(`p--player${winner.token.toUpperCase()}`);
 }
 
 // for cpu play
@@ -205,15 +224,24 @@ function cpuPlay() {
       mouseEnterBox(boardBoxes[index]);
       mouseClickBox(boardBoxes[index]);
       fillBoard(index);
-      gameBoardOverlay.classList.add("invisible");
+      checkWinner();
 
-      isWinner = checkWinner();
-      if (isWinner) {
+      if (isGameOver) {
         setWinnerMsg();
-        overlay.classList.toggle("invisible");
-      } else switchTurn();
+        setTimeout(
+          () => {
+            overlay.classList.toggle("invisible");
+          },
+          700,
+          this
+        );
+      } else {
+        switchTurn();
+      }
+
+      gameBoardOverlay.classList.add("invisible");
     },
-    800,
+    700,
     this
   );
 }
@@ -244,7 +272,7 @@ boardBoxes.forEach((s) => {
     mouseEnterBox(s);
   });
 
-  s.addEventListener("mouseleave", (e) => {
+  s.addEventListener("mouseleave", () => {
     mouseLeaveBox(s);
   });
 
@@ -255,17 +283,21 @@ boardBoxes.forEach((s) => {
     // update board array
     fillBoard(parseInt(s.value));
     // check winner
-    isWinner = checkWinner();
+    checkWinner();
 
-    if (isWinner) {
+    if (isGameOver) {
       setWinnerMsg();
-      overlay.classList.toggle("invisible");
-      return;
+      setTimeout(
+        () => {
+          overlay.classList.toggle("invisible");
+        },
+        700,
+        this
+      );
     } else {
       switchTurn();
+      if (playWithCPU) cpuPlay();
     }
-
-    if (playWithCPU) cpuPlay();
   });
 });
 
@@ -282,14 +314,17 @@ nextBtn.addEventListener("click", () => {
   overlay.classList.toggle("invisible");
   updateScores();
   restartGame();
-  resetScoreBoard();
+  resetOverlay();
   cpuStart();
 });
 
 quitBtn.addEventListener("click", () => {
+  player1.winningScore = 0;
+  player2.winningScore = 0;
+  restartGame(true);
   updateScores();
-  restartGame();
-  resetScoreBoard();
+  resetOverlay();
+
   tokenXSelected.checked = false;
   overlay.classList.toggle("invisible");
   gameBoard.classList.toggle("invisible");
@@ -297,8 +332,9 @@ quitBtn.addEventListener("click", () => {
 });
 
 cancelBtn.addEventListener("click", () => {
-  winnerText.innerText = "takes the round";
-  winnerIcon.style.display = "block";
+  // winnerText.innerText = "takes the round";
+  // winnerIcon.style.display = "block";
+  resetOverlay();
   overlay.classList.toggle("invisible");
   gameoverBtns.classList.remove("invisible");
   restartBtns.classList.add("invisible");
@@ -308,6 +344,8 @@ restartBtn.addEventListener("click", () => {
   overlay.classList.toggle("invisible");
   gameoverBtns.classList.remove("invisible");
   restartBtns.classList.add("invisible");
+  isGameOver = true;
+  resetOverlay();
   restartGame();
   cpuStart();
 });
