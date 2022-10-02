@@ -364,10 +364,6 @@ input[type="radio"]:not(:checked) + label path {
   text-align: center;
 }
 
-.overlay__btn::before {
-  /* z-index: auto; */
-}
-
 .overlay__btn:nth-of-type(1) {
   margin-right: 1rem;
 }
