@@ -36,9 +36,9 @@ let isGameOver = false;
 let tieScore = 0;
 let winner;
 
-const filledIconPath = (path = currentTurn) => `./assets/icon-${path}.svg`;
+const filledIconPath = (path = currentTurn) => `assets/icon-${path}.svg`;
 const outlineIconPath = (path = currentTurn) =>
-  `./assets/icon-${path}-outline.svg`;
+  `assets/icon-${path}-outline.svg`;
 
 const player1 = new Player("player1");
 const player2 = new Player("player2");
