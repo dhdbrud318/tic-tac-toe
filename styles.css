@@ -25,13 +25,21 @@
 body {
   background: var(--main-dark);
 
+  font-size: 0.875rem;
+  font-family: "Outfit", sans-serif;
+  text-transform: uppercase;
+
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.875rem;
-  font-family: "Outfit", sans-serif;
-  text-transform: uppercase;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 img {
@@ -271,14 +279,12 @@ input[type="radio"]:not(:checked) + label path {
 }
 
 .play-game__current-player {
-  width: 1.25rem;
+  max-width: 1.25rem;
   object-fit: contain;
 }
 
 .play-game__restart-btn {
-  height: 52px;
-  width: 52px;
-  padding: 0;
+  padding: 1rem;
   justify-self: right;
 }
 
@@ -319,6 +325,10 @@ input[type="radio"]:not(:checked) + label path {
   justify-content: center;
 }
 
+.play-game__score p {
+  margin-bottom: 0.25em;
+}
+
 /* overlay */
 .overlay {
   position: fixed;
@@ -353,8 +363,6 @@ input[type="radio"]:not(:checked) + label path {
 }
 
 .overlay__winner-icon {
-  width: 4rem;
-  object-fit: contain;
   margin-right: 1.5rem;
 }
 
@@ -370,4 +378,74 @@ input[type="radio"]:not(:checked) + label path {
 
 .invisible {
   display: none;
+}
+
+@media (max-width: 32.25em) {
+  .container {
+    max-width: 90%;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  h3 {
+    font-size: 0.875rem;
+  }
+
+  .comp,
+  .play-game__score {
+    border-radius: 0.7em;
+  }
+
+  .comp::before {
+    bottom: calc(-0.4rem);
+    border-bottom-left-radius: 0.7em;
+    border-bottom-right-radius: 0.7em;
+  }
+
+  .comp--sm::before {
+    bottom: calc(-0.15rem);
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(6.25rem, 1fr));
+  }
+
+  .play-game__board {
+    grid-template-rows: repeat(3, minmax(auto, 6.25rem));
+  }
+
+  .play-game__player-turn {
+    padding: 0.75em 1em;
+  }
+
+  .play-game__header {
+    margin-bottom: 4rem;
+    justify-self: first baseline;
+  }
+
+  .play-game__box img {
+    transform: scale(0.625);
+  }
+
+  .play-game__restart-btn {
+    padding: 0.75em;
+  }
+
+  .overlay__winner {
+    margin-bottom: 0.5rem;
+  }
+
+  .overlay__winner-icon {
+    margin-right: 0;
+  }
+
+  .overlay__winner-icon img {
+    transform: scale(0.46875);
+  }
 }
